@@ -19,7 +19,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible"
-import { type StartupQuestion, defaultStartupQuestions } from "@/lib/mock-data"
+import { type StartupQuestion } from "@/lib/mock-data"
 
 const categoryConfig = {
   basic: {
@@ -139,16 +139,12 @@ function QuestionItem({
   )
 }
 
-export function StartupInfo() {
-  const [questions, setQuestions] = useState<StartupQuestion[]>(
-    defaultStartupQuestions
-  )
+interface StartupInfoProps {
+  questions: StartupQuestion[]
+  onSave: (id: string, answer: string) => void
+}
 
-  function handleSave(id: string, answer: string) {
-    setQuestions((prev) =>
-      prev.map((q) => (q.id === id ? { ...q, answer } : q))
-    )
-  }
+export function StartupInfo({ questions, onSave }: StartupInfoProps) {
 
   const categories = ["basic", "narrative", "media"] as const
   const answeredCount = questions.filter((q) => q.answer.trim()).length
@@ -199,7 +195,7 @@ export function StartupInfo() {
                     <QuestionItem
                       key={item.id}
                       item={item}
-                      onSave={handleSave}
+                      onSave={onSave}
                     />
                   ))}
                 </div>

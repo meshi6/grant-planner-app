@@ -14,6 +14,7 @@ import {
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
+import { type StartupQuestion } from "@/lib/mock-data"
 
 interface ScorecardResult {
   grantName: string
@@ -111,7 +112,11 @@ function ScoreRing({
   )
 }
 
-export function GrantScorecard() {
+interface GrantScorecardProps {
+  startupQuestions: StartupQuestion[]
+}
+
+export function GrantScorecard({ startupQuestions }: GrantScorecardProps) {
   const [url, setUrl] = useState("")
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -126,11 +131,17 @@ export function GrantScorecard() {
     setError(null)
     setResult(null)
 
+    // Build a startup profile from answered questions
+    const startupProfile = startupQuestions
+      .filter((q) => q.answer.trim())
+      .map((q) => `${q.question}: ${q.answer}`)
+      .join("\n")
+
     try {
       const res = await fetch("/api/scorecard", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ url: trimmed }),
+        body: JSON.stringify({ url: trimmed, startupProfile }),
       })
 
       const data = await res.json()
@@ -171,9 +182,24 @@ export function GrantScorecard() {
           Grant Scorecard
         </h2>
         <p className="text-sm text-muted-foreground">
-          Paste a grant URL to get an AI-powered compatibility scorecard
+          Paste a grant URL to see how well it matches your startup profile
         </p>
       </div>
+
+      {/* Missing startup info warning */}
+      {startupQuestions.filter((q) => q.answer.trim()).length === 0 && (
+        <div className="flex items-start gap-3 rounded-lg border border-warning/30 bg-warning/5 p-4">
+          <AlertCircle className="h-5 w-5 text-warning shrink-0 mt-0.5" />
+          <div>
+            <p className="text-sm font-medium text-foreground">
+              No startup info provided
+            </p>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              Fill in your Startup Info tab first for a personalized score. Without it, the scorecard will be generic.
+            </p>
+          </div>
+        </div>
+      )}
 
       {/* URL Input */}
       <form onSubmit={handleSubmit} className="flex flex-col gap-3 sm:flex-row">
@@ -312,7 +338,7 @@ export function GrantScorecard() {
             Enter a grant URL above to generate a scorecard
           </p>
           <p className="text-xs text-muted-foreground/60 mt-1">
-            We{"'"}ll analyze mission alignment, budget feasibility, and project impact
+            We{"'"}ll score mission alignment, budget feasibility, and project impact against your startup profile
           </p>
         </div>
       )}

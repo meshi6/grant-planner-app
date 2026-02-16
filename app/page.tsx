@@ -1,13 +1,25 @@
 "use client"
 
+import { useState } from "react"
 import { AppHeader } from "@/components/app-header"
 import { StartupInfo } from "@/components/startup-info"
 import { GrantTracker } from "@/components/grant-tracker"
 import { GrantScorecard } from "@/components/grant-scorecard"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Building2, FolderSearch, Target } from "lucide-react"
+import { type StartupQuestion, defaultStartupQuestions } from "@/lib/mock-data"
 
 export default function Page() {
+  const [questions, setQuestions] = useState<StartupQuestion[]>(
+    defaultStartupQuestions
+  )
+
+  function handleSave(id: string, answer: string) {
+    setQuestions((prev) =>
+      prev.map((q) => (q.id === id ? { ...q, answer } : q))
+    )
+  }
+
   return (
     <div className="min-h-screen bg-background">
       <AppHeader />
@@ -32,7 +44,7 @@ export default function Page() {
           </TabsList>
 
           <TabsContent value="info">
-            <StartupInfo />
+            <StartupInfo questions={questions} onSave={handleSave} />
           </TabsContent>
 
           <TabsContent value="tracker">
@@ -40,7 +52,7 @@ export default function Page() {
           </TabsContent>
 
           <TabsContent value="scorecard">
-            <GrantScorecard />
+            <GrantScorecard startupQuestions={questions} />
           </TabsContent>
         </Tabs>
       </main>
