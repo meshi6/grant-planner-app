@@ -3,8 +3,9 @@
 import { AppHeader } from "@/components/app-header"
 import { StartupInfo } from "@/components/startup-info"
 import { GrantTracker } from "@/components/grant-tracker"
+import { GrantScorecard } from "@/components/grant-scorecard"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Building2, FolderSearch } from "lucide-react"
+import { Building2, FolderSearch, Target } from "lucide-react"
 
 export default function Page() {
   return (
@@ -23,6 +24,11 @@ export default function Page() {
               <span className="hidden sm:inline">Grant Tracker</span>
               <span className="sm:hidden">Tracker</span>
             </TabsTrigger>
+            <TabsTrigger value="scorecard" className="gap-2">
+              <Target className="h-4 w-4" />
+              <span className="hidden sm:inline">Scorecard</span>
+              <span className="sm:hidden">Score</span>
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="info">
@@ -31,6 +37,10 @@ export default function Page() {
 
           <TabsContent value="tracker">
             <GrantTracker />
+          </TabsContent>
+
+          <TabsContent value="scorecard">
+            <GrantScorecard />
           </TabsContent>
         </Tabs>
       </main>
