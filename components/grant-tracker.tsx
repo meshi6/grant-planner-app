@@ -11,7 +11,8 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { GrantCard } from "@/components/grant-card"
-import { mockGrants, type Grant } from "@/lib/mock-data"
+import { ScorecardDialog, type ScorecardResult } from "@/components/scorecard-dialog"
+import { mockGrants, type Grant, type StartupQuestion } from "@/lib/mock-data"
 
 type FilterCategory =
   | "all"
@@ -76,7 +77,6 @@ function applySort(grants: Grant[], sort: SortOption): Grant[] {
         return aDate.getTime() - bDate.getTime()
       })
     default:
-      // Default: by order ascending, then name A-Z, amounts greatest to lowest
       return copy.sort((a, b) => {
         const aIdx = parseInt(a.id)
         const bIdx = parseInt(b.id)
@@ -88,10 +88,36 @@ function applySort(grants: Grant[], sort: SortOption): Grant[] {
   }
 }
 
-export function GrantTracker() {
+interface GrantTrackerProps {
+  startupQuestions: StartupQuestion[]
+}
+
+export function GrantTracker({ startupQuestions }: GrantTrackerProps) {
   const [search, setSearch] = useState("")
   const [filter, setFilter] = useState<FilterCategory>("all")
   const [sort, setSort] = useState<SortOption>("default")
+
+  // Scorecard state: map of grantId -> ScorecardResult
+  const [scorecards, setScorecards] = useState<Record<string, ScorecardResult>>({})
+
+  // Dialog state
+  const [dialogOpen, setDialogOpen] = useState(false)
+  const [scoringGrantId, setScoringGrantId] = useState<string | null>(null)
+
+  const scoringGrant = scoringGrantId
+    ? mockGrants.find((g) => g.id === scoringGrantId) ?? null
+    : null
+
+  function handleRequestScore(grantId: string) {
+    setScoringGrantId(grantId)
+    setDialogOpen(true)
+  }
+
+  function handleScorecardResult(result: ScorecardResult) {
+    if (scoringGrantId) {
+      setScorecards((prev) => ({ ...prev, [scoringGrantId]: result }))
+    }
+  }
 
   const filteredGrants = useMemo(() => {
     let result = [...mockGrants]
@@ -123,7 +149,7 @@ export function GrantTracker() {
           Grant Tracker
         </h2>
         <p className="text-sm text-muted-foreground">
-          Browse and discover grant opportunities
+          Browse grants and generate AI-powered scorecards
         </p>
       </div>
 
@@ -184,7 +210,13 @@ export function GrantTracker() {
       {filteredGrants.length > 0 ? (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {filteredGrants.map((grant) => (
-            <GrantCard key={grant.id} grant={grant} />
+            <GrantCard
+              key={grant.id}
+              grant={grant}
+              scorecard={scorecards[grant.id] ?? null}
+              startupQuestions={startupQuestions}
+              onRequestScore={handleRequestScore}
+            />
           ))}
         </div>
       ) : (
@@ -202,6 +234,18 @@ export function GrantTracker() {
             Clear filters
           </button>
         </div>
+      )}
+
+      {/* Scorecard Dialog */}
+      {scoringGrant && (
+        <ScorecardDialog
+          open={dialogOpen}
+          onOpenChange={setDialogOpen}
+          grantName={scoringGrant.name}
+          grantLink={scoringGrant.link}
+          startupQuestions={startupQuestions}
+          onResult={handleScorecardResult}
+        />
       )}
     </div>
   )
