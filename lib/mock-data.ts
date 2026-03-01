@@ -97,6 +97,22 @@ export interface Grant {
   submissionDate: string | null
   submitted: boolean
   granted: boolean
+  scorecard?: {
+    grantName: string
+    missionAlignment: number
+    missionRationale: string
+    budgetFeasibility: number
+    budgetRationale: string
+    projectImpact: number
+    impactRationale: string
+    eligibilityFit: number
+    eligibilityRationale: string
+    competitionLevel: number
+    competitionRationale: string
+    timelineReadiness: number
+    timelineRationale: string
+    summary: string
+  }
 }
 
 export const mockGrants: Grant[] = [
@@ -109,6 +125,22 @@ export const mockGrants: Grant[] = [
     submissionDate: "2026-02-10",
     submitted: true,
     granted: false,
+    scorecard: {
+      grantName: "Small Business Innovation Research (SBIR) Phase I",
+      missionAlignment: 8,
+      missionRationale: "Your AI-driven supply chain optimization solution aligns well with SBIR's focus on innovative technology for small businesses. The program specifically supports tech startups addressing operational efficiency.",
+      budgetFeasibility: 7,
+      budgetRationale: "The $275k Phase I award matches your stated need for R&D and market validation. However, strict reporting requirements and milestone tracking may require dedicated compliance resources.",
+      projectImpact: 9,
+      impactRationale: "Winning SBIR Phase I would accelerate your proof-of-concept and provide credibility with larger enterprise customers. The program opens doors to Phase II funding ($750k-$1M) if results are promising.",
+      eligibilityFit: 9,
+      eligibilityRationale: "Your startup meets all SBIR criteria: incorporated in the US, woman-owned, under 500 employees, and in an eligible research area. You qualify for the Women-Owned Small Business advantage.",
+      competitionLevel: 6,
+      competitionRationale: "SBIR is highly competitive (~15% award rate) but the supply chain tech category is less saturated than AI/ML generally. Your focus on operations gives you a slight advantage in scoring.",
+      timelineReadiness: 8,
+      timelineRationale: "With 45 days to deadline, you have adequate time to prepare the 15-page proposal. Your existing pitch deck and technical documentation can be repurposed with minimal additional work.",
+      summary: "SBIR Phase I is an excellent strategic fit for your startup. Strong mission alignment, full eligibility, and realistic timeline make this a high-priority grant to pursue. Focus on clearly articulating your technical innovation and market opportunity in the proposal."
+    }
   },
   {
     id: "2",

@@ -98,7 +98,16 @@ export function GrantTracker({ startupQuestions }: GrantTrackerProps) {
   const [sort, setSort] = useState<SortOption>("default")
 
   // Scorecard state: map of grantId -> ScorecardResult
-  const [scorecards, setScorecards] = useState<Record<string, ScorecardResult>>({})
+  // Initialize with sample scorecard from mock data if available
+  const [scorecards, setScorecards] = useState<Record<string, ScorecardResult>>(() => {
+    const initial: Record<string, ScorecardResult> = {}
+    mockGrants.forEach((grant) => {
+      if (grant.scorecard) {
+        initial[grant.id] = grant.scorecard
+      }
+    })
+    return initial
+  })
 
   // Dialog state
   const [dialogOpen, setDialogOpen] = useState(false)
