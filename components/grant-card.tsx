@@ -13,6 +13,9 @@ import {
   Rocket,
   RotateCcw,
   Gauge,
+  ShieldCheck,
+  Users,
+  Timer,
 } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
@@ -80,32 +83,32 @@ function MiniScoreRing({
   label: string
   icon: React.ElementType
 }) {
-  const circumference = 2 * Math.PI * 18
+  const circumference = 2 * Math.PI * 16
   const strokeDashoffset =
     circumference - ((score / 10) * 100 / 100) * circumference
 
   return (
-    <div className="flex flex-col items-center gap-1.5">
-      <div className="relative h-12 w-12">
+    <div className="flex flex-col items-center gap-1">
+      <div className="relative h-10 w-10">
         <svg
-          className="h-12 w-12 -rotate-90"
-          viewBox="0 0 44 44"
+          className="h-10 w-10 -rotate-90"
+          viewBox="0 0 40 40"
           aria-hidden="true"
         >
           <circle
-            cx="22"
-            cy="22"
-            r="18"
+            cx="20"
+            cy="20"
+            r="16"
             fill="none"
-            strokeWidth="3"
+            strokeWidth="2.5"
             className="stroke-muted"
           />
           <circle
-            cx="22"
-            cy="22"
-            r="18"
+            cx="20"
+            cy="20"
+            r="16"
             fill="none"
-            strokeWidth="3"
+            strokeWidth="2.5"
             strokeLinecap="round"
             className={`${getScoreStroke(score)} transition-all duration-700 ease-out`}
             style={{
@@ -115,14 +118,14 @@ function MiniScoreRing({
           />
         </svg>
         <div className="absolute inset-0 flex items-center justify-center">
-          <span className={`text-xs font-bold ${getScoreColor(score)}`}>
+          <span className={`text-[11px] font-bold ${getScoreColor(score)}`}>
             {score}
           </span>
         </div>
       </div>
-      <div className="flex items-center gap-1">
-        <Icon className={`h-3 w-3 ${getScoreColor(score)}`} />
-        <span className="text-[10px] font-medium text-muted-foreground leading-none">
+      <div className="flex items-center gap-0.5">
+        <Icon className={`h-2.5 w-2.5 ${getScoreColor(score)}`} />
+        <span className="text-[9px] font-medium text-muted-foreground leading-none">
           {label}
         </span>
       </div>
@@ -149,8 +152,11 @@ export function GrantCard({
     ? Math.round(
         (scorecard.missionAlignment +
           scorecard.budgetFeasibility +
-          scorecard.projectImpact) /
-          3
+          scorecard.projectImpact +
+          scorecard.eligibilityFit +
+          scorecard.competitionLevel +
+          scorecard.timelineReadiness) /
+          6
       )
     : null
 
@@ -330,9 +336,9 @@ export function GrantCard({
                   </div>
                 </div>
               </CardHeader>
-              <CardContent className="flex-1 flex flex-col gap-3 pt-0">
-                {/* Score rings row */}
-                <div className="flex items-center justify-around py-1">
+              <CardContent className="flex-1 flex flex-col gap-2 pt-0">
+                {/* Score rings - 3x2 grid */}
+                <div className="grid grid-cols-3 gap-x-2 gap-y-3 py-1">
                   <MiniScoreRing
                     score={scorecard.missionAlignment}
                     label="Mission"
@@ -348,6 +354,21 @@ export function GrantCard({
                     label="Impact"
                     icon={Rocket}
                   />
+                  <MiniScoreRing
+                    score={scorecard.eligibilityFit}
+                    label="Eligibility"
+                    icon={ShieldCheck}
+                  />
+                  <MiniScoreRing
+                    score={scorecard.competitionLevel}
+                    label="Competition"
+                    icon={Users}
+                  />
+                  <MiniScoreRing
+                    score={scorecard.timelineReadiness}
+                    label="Timeline"
+                    icon={Timer}
+                  />
                 </div>
 
                 {/* Summary */}
@@ -355,7 +376,7 @@ export function GrantCard({
                   <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider mb-1">
                     Summary
                   </p>
-                  <p className="text-xs text-foreground leading-relaxed line-clamp-4">
+                  <p className="text-xs text-foreground leading-relaxed line-clamp-3">
                     {scorecard.summary}
                   </p>
                 </div>
