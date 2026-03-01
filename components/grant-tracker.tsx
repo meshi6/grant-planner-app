@@ -20,11 +20,13 @@ type FilterCategory =
   | "granted"
   | "deadline"
   | "grant_amount"
+  | "score"
 
 type SortOption = "default" | "name_az" | "amount_desc" | "deadline_asc"
 
 const filterOptions: { value: FilterCategory; label: string }[] = [
   { value: "all", label: "All" },
+  { value: "score", label: "Score" },
   { value: "submission_date", label: "Submission Date" },
   { value: "granted", label: "Granted" },
   { value: "deadline", label: "Deadline" },
@@ -38,8 +40,10 @@ const sortOptions: { value: SortOption; label: string }[] = [
   { value: "deadline_asc", label: "Deadline (Soonest)" },
 ]
 
-function applyFilter(grants: Grant[], filter: FilterCategory): Grant[] {
+function applyFilter(grants: Grant[], filter: FilterCategory, scorecards?: Record<string, ScorecardResult>): Grant[] {
   switch (filter) {
+    case "score":
+      return grants.filter((g) => scorecards && scorecards[g.id])
     case "submission_date":
       return grants.filter((g) => g.submissionDate !== null)
     case "granted":
@@ -98,7 +102,16 @@ export function GrantTracker({ startupQuestions }: GrantTrackerProps) {
   const [sort, setSort] = useState<SortOption>("default")
 
   // Scorecard state: map of grantId -> ScorecardResult
-  const [scorecards, setScorecards] = useState<Record<string, ScorecardResult>>({})
+  // Initialize with sample scorecard from mock data if available
+  const [scorecards, setScorecards] = useState<Record<string, ScorecardResult>>(() => {
+    const initial: Record<string, ScorecardResult> = {}
+    mockGrants.forEach((grant) => {
+      if (grant.scorecard) {
+        initial[grant.id] = grant.scorecard
+      }
+    })
+    return initial
+  })
 
   // Dialog state
   const [dialogOpen, setDialogOpen] = useState(false)
@@ -133,7 +146,7 @@ export function GrantTracker({ startupQuestions }: GrantTrackerProps) {
     }
 
     // Filter
-    result = applyFilter(result, filter)
+    result = applyFilter(result, filter, scorecards)
 
     // Sort
     result = applySort(result, sort)
