@@ -21,6 +21,24 @@ const scorecardSchema = z.object({
   impactRationale: z
     .string()
     .describe("Brief explanation (2-3 sentences) for the project impact score, referencing the startup's goals"),
+  eligibilityFit: z
+    .number()
+    .describe("Score from 1 to 10 for how well the startup meets the grant's stated requirements such as industry, location, revenue caps, and demographic criteria"),
+  eligibilityRationale: z
+    .string()
+    .describe("Brief explanation (2-3 sentences) for the eligibility fit score, referencing specific requirements from the grant page"),
+  competitionLevel: z
+    .number()
+    .describe("Score from 1 to 10 for how favorable the competition level is — higher means less competition and better odds of winning"),
+  competitionRationale: z
+    .string()
+    .describe("Brief explanation (2-3 sentences) for the competition level score, referencing the grant's popularity, applicant pool, and award rate"),
+  timelineReadiness: z
+    .number()
+    .describe("Score from 1 to 10 for how realistic it is that the startup can prepare a strong application before the deadline"),
+  timelineRationale: z
+    .string()
+    .describe("Brief explanation (2-3 sentences) for the timeline readiness score, considering application complexity and deadline proximity"),
   summary: z
     .string()
     .describe("A brief overall summary (3-4 sentences) of how well this grant fits this startup and recommended next steps"),
@@ -99,6 +117,9 @@ Score each dimension from 1 (poor fit) to 10 (excellent fit):
 - Mission Alignment: How well does the startup's mission, product, and qualifications match the grant's goals, target audience, and eligibility criteria?
 - Budget Feasibility: Given the startup's stage and the grant's funding amount, matching requirements, restrictions, and reporting burden, how feasible is it?
 - Project Impact: How much would winning this grant specifically benefit this startup in terms of funding, growth, visibility, and achieving their stated goals?
+- Eligibility Fit: Does the startup actually meet the grant's stated requirements — industry focus, geographic restrictions, revenue caps, demographic criteria, and any other eligibility rules?
+- Competition Level: How favorable is the competition for this grant? Consider the grant's popularity, typical number of applicants, award rate, and how well-positioned this startup is relative to typical applicants. Higher score means better odds.
+- Timeline Readiness: Can the startup realistically prepare a strong, complete application before the deadline? Consider application complexity, required materials, and how much preparation time remains.
 
 Be honest and specific. Reference concrete details from both the grant page and the startup profile in your rationales.
 ${startupSection}

@@ -26,6 +26,12 @@ export interface ScorecardResult {
   budgetRationale: string
   projectImpact: number
   impactRationale: string
+  eligibilityFit: number
+  eligibilityRationale: string
+  competitionLevel: number
+  competitionRationale: string
+  timelineReadiness: number
+  timelineRationale: string
   summary: string
 }
 
